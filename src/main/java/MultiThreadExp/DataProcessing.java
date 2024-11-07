@@ -1,5 +1,7 @@
 package MultiThreadExp;
 
+import MultiThreadExp.Objects.Archive;
+import MultiThreadExp.Objects.User;
 import MultiThreadExp.Users.Administrator;
 import MultiThreadExp.Users.Browser;
 import MultiThreadExp.Users.Operator;

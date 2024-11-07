@@ -1,7 +1,7 @@
 package MultiThreadExp.Users;
 
 import MultiThreadExp.DataProcessing;
-import MultiThreadExp.User;
+import MultiThreadExp.Objects.User;
 import MultiThreadExp.UserActions;
 import MultiThreadExp.Utils;
 

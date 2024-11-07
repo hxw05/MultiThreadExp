@@ -1,5 +1,8 @@
 package MultiThreadExp;
 
+import MultiThreadExp.Objects.Archive;
+import MultiThreadExp.Objects.User;
+
 public class UserActions {
     public static boolean downloadFile() {
         Utils.log("下载文件");
