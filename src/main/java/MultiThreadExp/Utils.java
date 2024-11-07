@@ -2,7 +2,9 @@ package MultiThreadExp;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Enumeration;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Utils {
     public static void log(String str) {
@@ -21,5 +23,12 @@ public class Utils {
         if (type == Float.class)
             return type.cast(scanner.nextFloat());
         return null;
+    }
+
+    public static <T> void listEnum(Enumeration<T> enumeration, Consumer<T> formatter) {
+        while (enumeration.hasMoreElements()) {
+            var e = enumeration.nextElement();
+            formatter.accept(e);
+        }
     }
 }

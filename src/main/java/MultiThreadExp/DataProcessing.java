@@ -29,6 +29,10 @@ public class DataProcessing {
         return users.elements();
     }
 
+    public static Enumeration<Archive> getAllArchives() {
+        return archives.elements();
+    }
+
     public static boolean updateUser(String name, String password, String role) {
         User user;
         if (users.containsKey(name)) {

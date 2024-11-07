@@ -68,10 +68,7 @@ public class Administrator extends User {
                     Utils.log("列出用户");
                     var userEnum = DataProcessing.getAllUser();
                     Utils.log("用户名\t密码\t角色");
-                    while (userEnum.hasMoreElements()) {
-                        var u = userEnum.nextElement();
-                        Utils.log(u.getName() + "\t" + u.getPassword() + "\t" + u.getRole());
-                    }
+                    Utils.listEnum(userEnum, u -> Utils.log(u.getName() + "\t" + u.getPassword() + "\t" + u.getRole()));
                     break;
                 }
 

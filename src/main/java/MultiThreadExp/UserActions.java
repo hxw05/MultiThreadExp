@@ -14,7 +14,10 @@ public class UserActions {
     }
 
     public static void listFiles() {
-        Utils.log("列表... ...");
+        Utils.log("文件列表");
+        var archives = DataProcessing.getAllArchives();
+        Utils.log("文件编号\t文件名\t文件简介");
+        Utils.listEnum(archives, a -> Utils.log(a.id() + "\t" + a.filename() + "\t" + a.description()));
     }
 
     public static boolean changePassword(User user) {
@@ -44,7 +47,7 @@ public class UserActions {
             return false;
         }
 
-        return DataProcessing.insertArchive(id, new Archive(filename, description));
+        return DataProcessing.insertArchive(id, new Archive(id, filename, description));
     }
 
     public static void exit() {
@@ -99,7 +102,6 @@ public class UserActions {
             Utils.log("用户已经存在");
             return false;
         }
-
         var password = Utils.read("请输入密码：", String.class);
         if (password == null) {
             Utils.log("请输入正确的密码");

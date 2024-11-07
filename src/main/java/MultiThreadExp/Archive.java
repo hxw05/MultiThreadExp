@@ -1,4 +1,4 @@
 package MultiThreadExp;
 
-public record Archive(String filename, String description) {
+public record Archive(String id, String filename, String description) {
 }
