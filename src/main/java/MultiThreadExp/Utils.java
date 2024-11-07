@@ -25,7 +25,7 @@ public class Utils {
         return null;
     }
 
-    public static <T> void listEnum(Enumeration<T> enumeration, Consumer<T> formatter) {
+    public static <T> void enumForEach(Enumeration<T> enumeration, Consumer<T> formatter) {
         while (enumeration.hasMoreElements()) {
             var e = enumeration.nextElement();
             formatter.accept(e);

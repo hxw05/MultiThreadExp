@@ -20,7 +20,7 @@ public class UserActions {
         Utils.log("文件列表");
         var archives = DataProcessing.getAllArchives();
         Utils.log("文件编号\t文件名\t文件简介");
-        Utils.listEnum(archives, a -> Utils.log(a.id() + "\t" + a.filename() + "\t" + a.description()));
+        Utils.enumForEach(archives, a -> Utils.log(a.id() + "\t" + a.filename() + "\t" + a.description()));
     }
 
     public static boolean changePassword(User user) {
