@@ -38,7 +38,7 @@ public class Main {
     public static User login() {
         var name = Utils.read("请输入用户名：", String.class);
 
-        User user = null;
+        User user;
         try {
             user = DataProcessing.searchUserByName(name);
         } catch (SQLException e) {
