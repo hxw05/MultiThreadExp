@@ -11,6 +11,8 @@ public class RandomErrorGenerator {
     }
 
     public boolean getError() {
-        return rand.nextDouble() < poss;
+        var r = rand.nextDouble();
+        System.out.println("LOG >> 模拟错误随机值=" + r);
+        return r < poss;
     }
 }
