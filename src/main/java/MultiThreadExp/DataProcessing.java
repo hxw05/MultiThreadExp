@@ -11,11 +11,11 @@ import java.util.*;
 
 public class DataProcessing {
     static Hashtable<String, User> users;
-    static Hashtable<String, File> archives;
+    static Hashtable<String, File> files;
     public static boolean isConnected = false;
 
     static {
-        archives = new Hashtable<>();
+        files = new Hashtable<>();
         users = new Hashtable<>();
         users.put("jack", new Operator("jack", "123", "operator"));
         users.put("rose", new Browser("rose", "123", "browser"));
@@ -55,7 +55,7 @@ public class DataProcessing {
         if (!isConnected) {
             throw new SQLException();
         }
-        return archives.elements();
+        return files.elements();
     }
 
     public static boolean updateUser(String name, String password, String role) throws SQLException {
@@ -105,8 +105,8 @@ public class DataProcessing {
         if (!isConnected) {
             throw new SQLException();
         }
-        if (archives.containsKey(id)) return false;
-        else archives.put(id, file);
+        if (files.containsKey(id)) return false;
+        else files.put(id, file);
         return true;
     }
 }
