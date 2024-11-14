@@ -1,7 +1,10 @@
 package MultiThreadExp;
 
-import MultiThreadExp.Objects.Archive;
+import MultiThreadExp.Objects.File;
 import MultiThreadExp.Objects.User;
+
+import java.sql.SQLException;
+import java.util.Enumeration;
 
 public class UserActions {
     public static boolean downloadFile() {
@@ -18,7 +21,13 @@ public class UserActions {
 
     public static void listFiles() {
         Utils.log("文件列表");
-        var archives = DataProcessing.getAllArchives();
+        Enumeration<File> archives = null;
+        try {
+            archives = DataProcessing.getAllFiles();
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return;
+        }
         Utils.log("文件编号\t文件名\t文件简介");
         Utils.enumForEach(archives, a -> Utils.log(a.id() + "\t" + a.filename() + "\t" + a.description()));
     }
@@ -31,7 +40,12 @@ public class UserActions {
             return false;
         }
 
-        return DataProcessing.updateUser(user.getName(), newPassword, user.getRole());
+        try {
+            return DataProcessing.updateUser(user.getName(), newPassword, user.getRole());
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
     }
 
     public static boolean uploadArchive() {
@@ -50,7 +64,12 @@ public class UserActions {
             return false;
         }
 
-        return DataProcessing.insertArchive(id, new Archive(id, filename, description));
+        try {
+            return DataProcessing.insertFile(id, new File(id, filename, description));
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
     }
 
     public static void exit() {
@@ -65,7 +84,13 @@ public class UserActions {
             Utils.log("请输入正确的用户名");
             return false;
         }
-        var user = DataProcessing.searchUserByName(username);
+        User user = null;
+        try {
+            user = DataProcessing.searchUserByName(username);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
         if (user == null) {
             Utils.log("用户不存在");
             return false;
@@ -74,7 +99,12 @@ public class UserActions {
         var password = Utils.read("请输入新密码（留空则保持不变）：", String.class);
         var role = Utils.read("请输入新角色（留空则保持不变）：", String.class);
 
-        return DataProcessing.updateUser(username, password, role);
+        try {
+            return DataProcessing.updateUser(username, password, role);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
     }
 
     public static boolean deleteUser() {
@@ -84,13 +114,24 @@ public class UserActions {
             Utils.log("请输入正确的用户名");
             return false;
         }
-        var user = DataProcessing.searchUserByName(username);
+        User user = null;
+        try {
+            user = DataProcessing.searchUserByName(username);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
         if (user == null) {
             Utils.log("用户不存在");
             return false;
         }
 
-        return DataProcessing.deleteUser(username);
+        try {
+            return DataProcessing.deleteUser(username);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
     }
 
     public static boolean insertUser() {
@@ -100,7 +141,13 @@ public class UserActions {
             Utils.log("请输入正确的用户名");
             return false;
         }
-        var user = DataProcessing.searchUserByName(username);
+        User user = null;
+        try {
+            user = DataProcessing.searchUserByName(username);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
         if (user != null) {
             Utils.log("用户已经存在");
             return false;
@@ -116,6 +163,10 @@ public class UserActions {
             return false;
         }
 
-        return DataProcessing.insertUser(username, password, role);
+        try {
+            return DataProcessing.insertUser(username, password, role);
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

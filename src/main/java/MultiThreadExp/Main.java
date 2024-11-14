@@ -2,6 +2,8 @@ package MultiThreadExp;
 
 import MultiThreadExp.Objects.User;
 
+import java.sql.SQLException;
+
 public class Main {
     public static void main(String[] args) {
         while (true) {
@@ -35,7 +37,14 @@ public class Main {
 
     public static User login() {
         var name = Utils.read("请输入用户名：", String.class);
-        var user = DataProcessing.searchUserByName(name);
+
+        User user = null;
+        try {
+            user = DataProcessing.searchUserByName(name);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return null;
+        }
         if (user == null) {
             Utils.log("用户名不存在！");
             return null;

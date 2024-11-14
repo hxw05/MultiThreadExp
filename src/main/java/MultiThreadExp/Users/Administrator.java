@@ -5,6 +5,9 @@ import MultiThreadExp.Objects.User;
 import MultiThreadExp.UserActions;
 import MultiThreadExp.Utils;
 
+import java.sql.SQLException;
+import java.util.Enumeration;
+
 public class Administrator extends User {
     public Administrator(String name, String password, String role) {
         super(name, password, role);
@@ -66,7 +69,13 @@ public class Administrator extends User {
 
                 case 4: {
                     Utils.log("列出用户");
-                    var userEnum = DataProcessing.getAllUser();
+                    Enumeration<User> userEnum = null;
+                    try {
+                        userEnum = DataProcessing.getAllUser();
+                    } catch (SQLException e) {
+                        Utils.log("数据库连接错误");
+                        break;
+                    }
                     Utils.log("用户名\t密码\t角色");
                     Utils.enumForEach(userEnum, u -> Utils.log(u.getName() + "\t" + u.getPassword() + "\t" + u.getRole()));
                     break;

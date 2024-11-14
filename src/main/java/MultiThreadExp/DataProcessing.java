@@ -1,16 +1,18 @@
 package MultiThreadExp;
 
-import MultiThreadExp.Objects.Archive;
+import MultiThreadExp.Objects.File;
 import MultiThreadExp.Objects.User;
 import MultiThreadExp.Users.Administrator;
 import MultiThreadExp.Users.Browser;
 import MultiThreadExp.Users.Operator;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class DataProcessing {
     static Hashtable<String, User> users;
-    static Hashtable<String, Archive> archives;
+    static Hashtable<String, File> archives;
+    public static boolean isConnected = false;
 
     static {
         archives = new Hashtable<>();
@@ -20,22 +22,47 @@ public class DataProcessing {
         users.put("kate", new Administrator("kate", "123", "administrator"));
     }
 
-    public static User searchUserByName(String name) {
+    /**
+     * 模拟真实数据库的initialize过程
+     * 0.5的概率产生错误
+     */
+    public static void init() {
+        var randErrGen = new RandomErrorGenerator(0.5);
+        isConnected = randErrGen.getError();
+    }
+
+    public static User searchUserByName(String name) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         if (users.containsKey(name)) {
             return users.get(name);
         }
         return null;
     }
 
-    public static Enumeration<User> getAllUser() {
+    public static Enumeration<User> getAllUser() throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         return users.elements();
     }
 
-    public static Enumeration<Archive> getAllArchives() {
+    public static Enumeration<File> getAllFiles() throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         return archives.elements();
     }
 
-    public static boolean updateUser(String name, String password, String role) {
+    public static boolean updateUser(String name, String password, String role) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         User user;
         if (users.containsKey(name)) {
             if (role.equalsIgnoreCase("administrator")) user = new Administrator(name, password, role);
@@ -46,7 +73,11 @@ public class DataProcessing {
         } else return false;
     }
 
-    public static boolean insertUser(String name, String password, String role) {
+    public static boolean insertUser(String name, String password, String role) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         User user;
         if (users.containsKey(name)) return false;
         else {
@@ -58,16 +89,24 @@ public class DataProcessing {
         }
     }
 
-    public static boolean deleteUser(String name) {
+    public static boolean deleteUser(String name) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         if (users.containsKey(name)) {
             users.remove(name);
             return true;
         } else return false;
     }
 
-    public static boolean insertArchive(String id, Archive archive) {
+    public static boolean insertFile(String id, File file) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
         if (archives.containsKey(id)) return false;
-        else archives.put(id, archive);
+        else archives.put(id, file);
         return true;
     }
 }
