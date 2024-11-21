@@ -27,8 +27,7 @@ public class DataProcessing {
      * 0.5的概率产生错误
      */
     public static void init() {
-        var randErrGen = new RandomErrorGenerator(0.5);
-        isConnected = randErrGen.getError();
+        isConnected = true;
     }
 
     public static User searchUserByName(String name) throws SQLException {
