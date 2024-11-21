@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
+        Utils.init();
+
         while (true) {
             Utils.log("****欢迎进入档案系统****");
             Utils.log("1. 登录");

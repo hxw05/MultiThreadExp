@@ -1,35 +1,57 @@
 package MultiThreadExp;
 
-import MultiThreadExp.Objects.File;
+import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.Enumeration;
 
 public class UserActions {
-    public static boolean downloadFile() {
+    public static boolean downloadDoc() {
         Utils.log("下载文件");
-        var archiveNumber = Utils.read("请输入档案号：", String.class);
+        var id = Utils.read("请输入档案号：", String.class);
 
-        if (archiveNumber == null) {
+        if (id == null) {
             Utils.log("请输入正确的值");
             return false;
         }
 
-        return true;
+        Doc doc;
+        try {
+            doc = DataProcessing.getDoc(id);
+        } catch (SQLException e) {
+            Utils.log("数据库连接错误");
+            return false;
+        }
+
+        if (doc == null) {
+            Utils.log("文件不存在");
+            return false;
+        }
+
+        return Utils.downloadFile(doc.getFilename());
     }
 
     public static void listFiles() {
         Utils.log("文件列表");
-        Enumeration<File> archives = null;
+        Enumeration<Doc> archives = null;
         try {
             archives = DataProcessing.getAllFiles();
         } catch (SQLException e) {
             Utils.log("数据库连接错误");
             return;
         }
-        Utils.log("文件编号\t文件名\t文件简介");
-        Utils.enumForEach(archives, a -> Utils.log(a.id() + "\t" + a.filename() + "\t" + a.description()));
+        Utils.log("文件编号\t文件路径\t文件简介\t上传者\t上传时间");
+        Utils.enumForEach(archives,
+                a -> Utils.log(
+                a.getID()
+                        + "\t" + a.getFilename()
+                        + "\t" + a.getDescription()
+                        + "\t" + a.getCreator()
+                        + "\t" + Utils.formatTimestamp(a.getTimestamp())
+                )
+        );
     }
 
     public static boolean changePassword(User user) {
@@ -48,13 +70,20 @@ public class UserActions {
         }
     }
 
-    public static boolean uploadArchive() {
+    public static boolean uploadDoc(User user) {
         Utils.log("上传文件");
-        var filename = Utils.read("请输入文件名：", String.class);
-        if (filename == null) {
-            Utils.log("请输入有效的文件名");
+        var filepath = Utils.read("请输入文件路径：", String.class);
+        if (filepath == null) {
+            Utils.log("请输入有效的文件路径");
             return false;
         }
+
+        var file = new File(filepath);
+        if (!file.exists()) {
+            Utils.log("文件不存在");
+            return false;
+        }
+
         var description = Utils.read("请输入文件简介：", String.class);
         // 简介可以没有，所以不进行判断
         if (description == null) description = "";
@@ -64,8 +93,13 @@ public class UserActions {
             return false;
         }
 
+        if (!Utils.uploadFile(file)) {
+            Utils.log("上传过程出现问题");
+            return false;
+        }
+
         try {
-            return DataProcessing.insertFile(id, new File(id, filename, description));
+            return DataProcessing.insertFile(id, new Doc(id, user.getName(), Utils.getCurrentTimestamp(), description, filepath, file.getName()));
         } catch (SQLException e) {
             Utils.log("数据库连接错误");
             return false;
@@ -84,7 +118,7 @@ public class UserActions {
             Utils.log("请输入正确的用户名");
             return false;
         }
-        User user = null;
+        User user;
         try {
             user = DataProcessing.searchUserByName(username);
         } catch (SQLException e) {

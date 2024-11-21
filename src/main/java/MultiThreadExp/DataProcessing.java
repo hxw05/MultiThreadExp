@@ -1,21 +1,22 @@
 package MultiThreadExp;
 
-import MultiThreadExp.Objects.File;
+import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
 import MultiThreadExp.Users.Administrator;
 import MultiThreadExp.Users.Browser;
 import MultiThreadExp.Users.Operator;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class DataProcessing {
     static Hashtable<String, User> users;
-    static Hashtable<String, File> files;
+    static Hashtable<String, Doc> docs;
     public static boolean isConnected = false;
 
     static {
-        files = new Hashtable<>();
+        docs = new Hashtable<>();
         users = new Hashtable<>();
         users.put("jack", new Operator("jack", "123", "operator"));
         users.put("rose", new Browser("rose", "123", "browser"));
@@ -49,12 +50,12 @@ public class DataProcessing {
         return users.elements();
     }
 
-    public static Enumeration<File> getAllFiles() throws SQLException {
+    public static Enumeration<Doc> getAllFiles() throws SQLException {
         DataProcessing.init();
         if (!isConnected) {
             throw new SQLException();
         }
-        return files.elements();
+        return docs.elements();
     }
 
     public static boolean updateUser(String name, String password, String role) throws SQLException {
@@ -99,13 +100,21 @@ public class DataProcessing {
         } else return false;
     }
 
-    public static boolean insertFile(String id, File file) throws SQLException {
+    public static boolean insertFile(String id, Doc file) throws SQLException {
         DataProcessing.init();
         if (!isConnected) {
             throw new SQLException();
         }
-        if (files.containsKey(id)) return false;
-        else files.put(id, file);
+        if (docs.containsKey(id)) return false;
+        else docs.put(id, file);
         return true;
+    }
+
+    public static @Nullable Doc getDoc(String id) throws SQLException {
+        DataProcessing.init();
+        if (!isConnected) {
+            throw new SQLException();
+        }
+        return docs.get(id);
     }
 }

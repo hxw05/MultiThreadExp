@@ -82,7 +82,7 @@ public class Administrator extends User {
                 }
 
                 case 5: {
-                    if (UserActions.downloadFile()) {
+                    if (UserActions.downloadDoc()) {
                         Utils.log("下载成功");
                     } else {
                         Utils.log("下载失败");

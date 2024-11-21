@@ -33,7 +33,7 @@ public class Browser extends User {
 
             switch (choice) {
                 case 1: {
-                    if (UserActions.downloadFile()) {
+                    if (UserActions.downloadDoc()) {
                         Utils.log("下载成功");
                     } else {
                         Utils.log("下载失败");

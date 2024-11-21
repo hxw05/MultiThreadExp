@@ -35,7 +35,7 @@ public class Operator extends User {
 
             switch (choice) {
                 case 1: {
-                    if (UserActions.uploadArchive()) {
+                    if (UserActions.uploadDoc(this)) {
                         Utils.log("上传成功");
                     } else {
                         Utils.log("上传失败");
@@ -44,7 +44,7 @@ public class Operator extends User {
                 }
 
                 case 2: {
-                    if (UserActions.downloadFile()) {
+                    if (UserActions.downloadDoc()) {
                         Utils.log("下载成功");
                     } else {
                         Utils.log("下载失败");
