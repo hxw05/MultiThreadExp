@@ -23,6 +23,7 @@ public class MainWindow extends JFrame {
                 } + "界面"
         );
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
 
         var menuBar = new JMenuBar();
         var menuUserManagement = new JMenu("用户管理");

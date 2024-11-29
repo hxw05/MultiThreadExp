@@ -3,15 +3,12 @@ package MultiThreadExp.GUI;
 import MultiThreadExp.DataProcessing;
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
-import MultiThreadExp.Objects.UserActionType;
 import MultiThreadExp.UserActions;
 import MultiThreadExp.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.File;
 import java.sql.SQLException;
@@ -29,6 +26,7 @@ public class FileManagementWindow extends CancellableWindow {
         this.setLayout(null);
         this.setSize(400, 400);
         this.user = user;
+        this.setLocationRelativeTo(null);
 
         var docs = getDocs().stream().map(Doc::toDataRow).toList().toArray(new String[0][0]);
         fileTableModel = new DefaultTableModel(docs, new String[]{"文件名", "路径", "描述", "上传者", "上传时间"});
@@ -59,6 +57,7 @@ public class FileManagementWindow extends CancellableWindow {
 
     private JPanel getUploadPanel() {
         var panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         var inputPanel = new JPanel();
 

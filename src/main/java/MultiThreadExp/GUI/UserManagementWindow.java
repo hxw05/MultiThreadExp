@@ -24,6 +24,7 @@ public class UserManagementWindow extends CancellableWindow {
     public UserManagementWindow() {
         this.setLayout(null);
         this.setSize(400, 400);
+        this.setLocationRelativeTo(null);
 
         var data = getUserList();
         userTableModel = new DefaultTableModel(
@@ -157,6 +158,8 @@ public class UserManagementWindow extends CancellableWindow {
         controlPanel.add(cancelButton);
 
         var panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
         panel.add(inputPanel);
         panel.add(controlPanel);
         return panel;
@@ -194,8 +197,6 @@ public class UserManagementWindow extends CancellableWindow {
     }
 
     private JPanel getAlterUserPanel() {
-        var panel = new JPanel();
-
         var inputPanel = new JPanel();
 
         var layout = new GroupLayout(inputPanel);
@@ -212,13 +213,13 @@ public class UserManagementWindow extends CancellableWindow {
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                         .addGroup(
-                                layout.createParallelGroup()
+                                layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                         .addComponent(label1)
                                         .addComponent(label2)
                                         .addComponent(label3)
                         )
                         .addGroup(
-                                layout.createParallelGroup()
+                                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(usernameSelection)
                                         .addComponent(passwordField)
                                         .addComponent(roleSelection)
@@ -228,17 +229,17 @@ public class UserManagementWindow extends CancellableWindow {
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addGroup(
-                                layout.createParallelGroup()
+                                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label1)
                                         .addComponent(usernameSelection)
                         )
                         .addGroup(
-                                layout.createParallelGroup()
+                                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label2)
                                         .addComponent(passwordField)
                         )
                         .addGroup(
-                                layout.createParallelGroup()
+                                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label3)
                                         .addComponent(roleSelection)
                         )
@@ -250,6 +251,9 @@ public class UserManagementWindow extends CancellableWindow {
 
         controlPanel.add(alterButton);
         controlPanel.add(cancelButton);
+
+        var panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         panel.add(inputPanel);
         panel.add(controlPanel);

@@ -6,6 +6,7 @@ import MultiThreadExp.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class PersonalManagementWindow extends CancellableWindow {
     public User user;
@@ -16,10 +17,13 @@ public class PersonalManagementWindow extends CancellableWindow {
 
         this.setContentPane(getAlterPanel());
         this.setTitle("个人信息管理");
+        this.setLocationRelativeTo(null);
+
     }
 
     private JPanel getAlterPanel() {
         var panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         var inputPanel = new JPanel();
         var layout = new GroupLayout(inputPanel);
@@ -110,7 +114,7 @@ public class PersonalManagementWindow extends CancellableWindow {
                 return;
             }
             var newPassword = new String(newPasswordField.getPassword());
-            var confirmPassword  = new String(confirmPasswordField.getPassword());
+            var confirmPassword = new String(confirmPasswordField.getPassword());
             if (!confirmPassword.equals(newPassword)) {
                 Utils.showWarnDialog("确认密码与新密码不符");
                 return;
