@@ -4,7 +4,7 @@ import MultiThreadExp.Objects.User;
 
 import javax.swing.*;
 
-public class PersonalManagementWindow extends JFrame {
+public class PersonalManagementWindow extends CancellableWindow {
     public User user;
 
     public PersonalManagementWindow(User user) {
@@ -87,7 +87,11 @@ public class PersonalManagementWindow extends JFrame {
 
         var controlPanel = new JPanel();
         var okButton = new JButton("确定");
-        var cancelButton = new JButton("取消");
+
+        okButton.addActionListener(l -> {
+
+        });
+
         controlPanel.add(okButton);
         controlPanel.add(cancelButton);
 

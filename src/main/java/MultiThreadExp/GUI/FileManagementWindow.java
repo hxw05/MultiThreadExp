@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-public class FileManagementWindow extends JFrame {
+public class FileManagementWindow extends CancellableWindow {
     public final JTabbedPane tabbedPane = new JTabbedPane();
 
     private List<Doc> getDocs() {
@@ -94,7 +94,6 @@ public class FileManagementWindow extends JFrame {
 
         var controlPanel = new JPanel();
         var uploadButton = new JButton("上传");
-        var cancelButton = new JButton("取消");
 
         controlPanel.add(uploadButton);
         controlPanel.add(cancelButton);
@@ -123,7 +122,6 @@ public class FileManagementWindow extends JFrame {
 
         var controlPanel = new JPanel();
         var downloadButton = new JButton("下载");
-        var cancelButton = new JButton("取消");
 
         controlPanel.add(downloadButton);
         controlPanel.add(cancelButton);

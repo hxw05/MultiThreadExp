@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-public class UserManagementWindow extends JFrame {
+public class UserManagementWindow extends CancellableWindow {
     public final JTabbedPane tabbedPane = new JTabbedPane();
     private final String[] roles = new String[]{"administrator", "browser", "operator"};
     private final List<User> users;
@@ -117,7 +117,6 @@ public class UserManagementWindow extends JFrame {
         controlPanel.setLayout(new FlowLayout());
 
         var addButton = new JButton("添加");
-        var cancelButton = new JButton("取消");
 
         controlPanel.add(addButton);
         controlPanel.add(cancelButton);
@@ -182,7 +181,6 @@ public class UserManagementWindow extends JFrame {
         var controlPanel = new JPanel();
 
         var alterButton = new JButton("修改");
-        var cancelButton = new JButton("取消");
 
         controlPanel.add(alterButton);
         controlPanel.add(cancelButton);
