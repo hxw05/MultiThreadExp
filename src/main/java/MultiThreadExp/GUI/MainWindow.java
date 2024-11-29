@@ -45,7 +45,7 @@ public class MainWindow extends JFrame {
                 new JMenuItem("上传档案"),
                 new JMenuItem("下载档案")
         );
-        this.fileManagementWindow = new FileManagementWindow();
+        this.fileManagementWindow = new FileManagementWindow(this.user);
         for (int i = 0; i < menuFileManagementItems.size(); i++) {
             int finalI = i;
             menuFileManagementItems.get(i).addActionListener(e -> fileManagementWindow.tabbedPane.setSelectedIndex(finalI));

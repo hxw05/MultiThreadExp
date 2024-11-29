@@ -2,35 +2,15 @@ package MultiThreadExp;
 
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Enumeration;
 
 public class UserActions {
-    public static boolean downloadDoc() {
-        Utils.log("下载文件");
-        var id = Utils.read("请输入档案号：", String.class);
-
-        if (id == null) {
-            Utils.log("请输入正确的值");
-            return false;
-        }
-
-        Doc doc;
-        try {
-            doc = DataProcessing.getDoc(id);
-        } catch (SQLException e) {
-            Utils.log("数据库连接错误");
-            return false;
-        }
-
-        if (doc == null) {
-            Utils.log("文件不存在");
-            return false;
-        }
-
-        return Utils.downloadFile(doc.getFilename());
+    public static boolean downloadDoc(Doc doc, String targetPath) {
+        return Utils.downloadFile(doc.getFilename(), targetPath);
     }
 
     public static void listFiles() {
@@ -45,11 +25,11 @@ public class UserActions {
         Utils.log("文件编号\t文件路径\t文件简介\t上传者\t上传时间");
         Utils.enumForEach(archives,
                 a -> Utils.log(
-                a.getID()
-                        + "\t" + a.getFilename()
-                        + "\t" + a.getDescription()
-                        + "\t" + a.getCreator()
-                        + "\t" + Utils.formatTimestamp(a.getTimestamp())
+                        a.getID()
+                                + "\t" + a.getFilename()
+                                + "\t" + a.getDescription()
+                                + "\t" + a.getCreator()
+                                + "\t" + Utils.formatTimestamp(a.getTimestamp())
                 )
         );
     }
@@ -65,39 +45,20 @@ public class UserActions {
         }
     }
 
-    public static boolean uploadDoc(User user) {
+    public static @Nullable Doc uploadDoc(User user, String id, String description, String filepath) {
         Utils.log("上传文件");
-        var filepath = Utils.read("请输入文件路径：", String.class);
-        if (filepath == null) {
-            Utils.log("请输入有效的文件路径");
-            return false;
-        }
 
-        var file = new File(filepath);
-        if (!file.exists()) {
-            Utils.log("文件不存在");
-            return false;
-        }
-
-        var description = Utils.read("请输入文件简介：", String.class);
-        // 简介可以没有，所以不进行判断
-        if (description == null) description = "";
-        var id = Utils.read("请输入文件编号：", String.class);
-        if (id == null) {
-            Utils.log("请输入有效的文件编号");
-            return false;
-        }
-
-        if (!Utils.uploadFile(file)) {
+        if (!Utils.uploadFile(new File(filepath))) {
             Utils.log("上传过程出现问题");
-            return false;
+            return null;
         }
 
         try {
-            return DataProcessing.insertFile(id, new Doc(id, user.getName(), Utils.getCurrentTimestamp(), description, filepath));
+            var doc = new Doc(id, user.getName(), Utils.getCurrentTimestamp(), description, filepath);
+            return DataProcessing.insertFile(id, doc) ? doc : null;
         } catch (SQLException e) {
             Utils.log("数据库连接错误");
-            return false;
+            return null;
         }
     }
 

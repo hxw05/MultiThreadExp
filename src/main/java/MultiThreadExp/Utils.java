@@ -1,35 +1,26 @@
 package MultiThreadExp;
 
-import MultiThreadExp.Objects.UserActionType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class Utils {
     public static final String UPLOAD_PATH = "/Users/su/code/MultiThreadExp/upload";
-    public static final String DOWNLOAD_PATH = "/Users/su/code/MultiThreadExp/download";
 
     public static void init() {
         var uploadPath = new File(UPLOAD_PATH);
         if (!uploadPath.exists()) {
             if (!uploadPath.mkdir()) {
-                throw new IllegalStateException();
-            }
-        }
-        var downloadPath = new File(DOWNLOAD_PATH);
-        if (!downloadPath.exists()) {
-            if (!downloadPath.mkdir()) {
                 throw new IllegalStateException();
             }
         }
@@ -66,14 +57,7 @@ public class Utils {
 
     public static String formatTimestamp(Timestamp timestamp) {
         var sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS");
-        return sdf.format(timestamp.toLocalDateTime());
-    }
-
-    public static @NotNull File getFileOperationPath(String filename, UserActionType type) {
-        return switch (type) {
-            case UPLOAD -> new File(UPLOAD_PATH + "/" + filename);
-            case DOWNLOAD -> new File(DOWNLOAD_PATH + "/" + filename);
-        };
+        return sdf.format(new Date(timestamp.getTime()));
     }
 
     /**
@@ -94,13 +78,13 @@ public class Utils {
     }
 
     public static boolean uploadFile(File file) {
-        var operationPath = getFileOperationPath(file.getName(), UserActionType.UPLOAD);
+        var operationPath = new File(UPLOAD_PATH + "/" + file.getName());
         return copy(file, operationPath);
     }
 
-    public static boolean downloadFile(String filename) {
-        var source = getFileOperationPath(filename, UserActionType.UPLOAD);
-        var target = getFileOperationPath(filename, UserActionType.DOWNLOAD);
+    public static boolean downloadFile(String filename, String targetPath) {
+        var source = new File(UPLOAD_PATH + "/" + filename);
+        var target = new File(targetPath + "/" + filename);
 
         return copy(source, target);
     }

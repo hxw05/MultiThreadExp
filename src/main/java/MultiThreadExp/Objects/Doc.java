@@ -1,5 +1,7 @@
 package MultiThreadExp.Objects;
 
+import MultiThreadExp.Utils;
+
 import java.io.File;
 import java.sql.Timestamp;
 
@@ -66,5 +68,9 @@ public class Doc {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath;
+    }
+
+    public String[] toDataRow() {
+        return new String[]{this.filename, this.filepath, this.description, this.creator, Utils.formatTimestamp(this.timestamp)};
     }
 }
