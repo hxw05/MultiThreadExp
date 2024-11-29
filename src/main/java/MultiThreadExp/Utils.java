@@ -1,8 +1,10 @@
 package MultiThreadExp;
 
+import MultiThreadExp.Objects.TableData;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -99,5 +102,14 @@ public class Utils {
 
     public static void showOKDialog(String text) {
         JOptionPane.showMessageDialog(null, text, "成功", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showConfirmDialog(String text, Runnable func) {
+        var confirm = JOptionPane.showConfirmDialog(null, text, "确认", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) func.run();
+    }
+
+    public static String[][] toDataVector(List<? extends TableData> list) {
+        return list.stream().map(TableData::toDataRow).toList().toArray(new String[0][0]);
     }
 }

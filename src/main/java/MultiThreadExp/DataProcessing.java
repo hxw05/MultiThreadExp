@@ -73,29 +73,29 @@ public class DataProcessing {
         } else return false;
     }
 
-    public static boolean insertUser(String name, String password, String role) throws SQLException {
+    public static boolean insertUser(User user) throws SQLException {
         DataProcessing.init();
         if (!isConnected) {
             throw new SQLException();
         }
-        User user;
-        if (users.containsKey(name)) return false;
+        if (users.containsKey(user.getName())) return false;
         else {
-            if (role.equalsIgnoreCase("administrator")) user = new Administrator(name, password, role);
-            else if (role.equalsIgnoreCase("operator")) user = new Operator(name, password, role);
-            else user = new Browser(name, password, role);
-            users.put(name, user);
+            users.put(user.getName(), user);
             return true;
         }
     }
 
-    public static boolean deleteUser(String name) throws SQLException {
+    public static boolean deleteUser(User user) throws SQLException {
+        return deleteUser(user.getName());
+    }
+
+    public static boolean deleteUser(String username) throws SQLException {
         DataProcessing.init();
         if (!isConnected) {
             throw new SQLException();
         }
-        if (users.containsKey(name)) {
-            users.remove(name);
+        if (users.containsKey(username)) {
+            users.remove(username);
             return true;
         } else return false;
     }

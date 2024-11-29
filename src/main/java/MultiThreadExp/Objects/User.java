@@ -1,6 +1,6 @@
 package MultiThreadExp.Objects;
 
-public abstract class User {
+public class User extends TableData {
     private String name;
     private String password;
     private String role;
@@ -38,5 +38,10 @@ public abstract class User {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public String[] toDataRow() {
+        return new String[]{this.name, this.password, this.role};
     }
 }
