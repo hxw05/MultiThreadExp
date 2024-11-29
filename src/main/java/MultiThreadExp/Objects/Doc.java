@@ -1,5 +1,6 @@
 package MultiThreadExp.Objects;
 
+import java.io.File;
 import java.sql.Timestamp;
 
 public class Doc {
@@ -10,13 +11,13 @@ public class Doc {
     private String filename;
     private String filepath;
 
-    public Doc(String ID, String creator, Timestamp timestamp, String description, String filepath, String filename) {
+    public Doc(String ID, String creator, Timestamp timestamp, String description, String filepath) {
         this.ID = ID;
         this.creator = creator;
         this.timestamp = timestamp;
         this.description = description;
-        this.filepath= filepath;
-        this.filename = filename;
+        this.filepath = filepath;
+        this.filename = new File(filepath).getName();
     }
 
     public String getID() {

@@ -99,7 +99,7 @@ public class UserActions {
         }
 
         try {
-            return DataProcessing.insertFile(id, new Doc(id, user.getName(), Utils.getCurrentTimestamp(), description, filepath, file.getName()));
+            return DataProcessing.insertFile(id, new Doc(id, user.getName(), Utils.getCurrentTimestamp(), description, filepath));
         } catch (SQLException e) {
             Utils.log("数据库连接错误");
             return false;
