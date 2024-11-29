@@ -11,10 +11,6 @@ public abstract class User {
         this.role = role;
     }
 
-    public abstract void showMenu();
-
-    public abstract void startLoop();
-
     public String getName() {
         return name;
     }

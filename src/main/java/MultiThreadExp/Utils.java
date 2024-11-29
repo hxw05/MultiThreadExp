@@ -4,6 +4,7 @@ import MultiThreadExp.Objects.UserActionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
@@ -102,5 +103,17 @@ public class Utils {
         var target = getFileOperationPath(filename, UserActionType.DOWNLOAD);
 
         return copy(source, target);
+    }
+
+    public static void showErrorDialog(String text) {
+        JOptionPane.showMessageDialog(null, text, "错误", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void showWarnDialog(String text) {
+        JOptionPane.showMessageDialog(null, text, "警告", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public static void showOKDialog(String text) {
+        JOptionPane.showMessageDialog(null, text, "成功", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -1,6 +1,9 @@
 package MultiThreadExp.GUI;
 
 import MultiThreadExp.Objects.User;
+import MultiThreadExp.UserActions;
+import MultiThreadExp.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -86,11 +89,7 @@ public class PersonalManagementWindow extends CancellableWindow {
         );
 
         var controlPanel = new JPanel();
-        var okButton = new JButton("确定");
-
-        okButton.addActionListener(l -> {
-
-        });
+        final var okButton = getOKButton(originalPasswordField, newPasswordField, confirmPasswordField);
 
         controlPanel.add(okButton);
         controlPanel.add(cancelButton);
@@ -99,5 +98,30 @@ public class PersonalManagementWindow extends CancellableWindow {
         panel.add(controlPanel);
 
         return panel;
+    }
+
+    private @NotNull JButton getOKButton(JPasswordField originalPasswordField, JPasswordField newPasswordField, JPasswordField confirmPasswordField) {
+        var okButton = new JButton("确定");
+
+        okButton.addActionListener(l -> {
+            var originalPassword = new String(originalPasswordField.getPassword());
+            if (!originalPassword.equals(this.user.getPassword())) {
+                Utils.showWarnDialog("原密码不符");
+                return;
+            }
+            var newPassword = new String(newPasswordField.getPassword());
+            var confirmPassword  = new String(confirmPasswordField.getPassword());
+            if (!confirmPassword.equals(newPassword)) {
+                Utils.showWarnDialog("确认密码与新密码不符");
+                return;
+            }
+            if (UserActions.changePassword(this.user, newPassword)) {
+                Utils.showOKDialog("修改成功");
+            } else {
+                Utils.showErrorDialog("修改过程出现问题");
+            }
+        });
+
+        return okButton;
     }
 }

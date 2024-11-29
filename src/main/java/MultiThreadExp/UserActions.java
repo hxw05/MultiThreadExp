@@ -54,13 +54,8 @@ public class UserActions {
         );
     }
 
-    public static boolean changePassword(User user) {
+    public static boolean changePassword(User user, String newPassword) {
         Utils.log("修改密码");
-        var newPassword = Utils.read("请输入新密码：", String.class);
-        if (newPassword == null) {
-            Utils.log("请输入正确的值");
-            return false;
-        }
 
         try {
             return DataProcessing.updateUser(user.getName(), newPassword, user.getRole());
