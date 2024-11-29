@@ -39,5 +39,8 @@ public abstract class User {
         this.role = role;
     }
 
-
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
