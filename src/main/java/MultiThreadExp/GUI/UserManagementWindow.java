@@ -1,6 +1,6 @@
 package MultiThreadExp.GUI;
 
-import MultiThreadExp.DataProcessing;
+import MultiThreadExp.Main;
 import MultiThreadExp.Objects.User;
 import MultiThreadExp.UserActions;
 import MultiThreadExp.Utils;
@@ -10,8 +10,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 public class UserManagementWindow extends CancellableWindow {
@@ -48,14 +46,11 @@ public class UserManagementWindow extends CancellableWindow {
     }
 
     public List<User> getUserList() {
-        Enumeration<User> userEnum;
         try {
-            userEnum = DataProcessing.getAllUser();
+            return Main.db.getAllUser();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return List.of();
         }
-
-        return Collections.list(userEnum);
     }
 
     private JPanel getDeleteUserPanel() {
@@ -172,7 +167,7 @@ public class UserManagementWindow extends CancellableWindow {
             var username = usernameField.getText();
 
             try {
-                var user = DataProcessing.searchUserByName(username);
+                var user = Main.db.getUserByUsername(username);
                 if (user != null) {
                     Utils.showWarnDialog("此用户名已存在");
                     return;
@@ -185,8 +180,9 @@ public class UserManagementWindow extends CancellableWindow {
             var password = passwordField.getText();
             var role = (String) roleSelection.getSelectedItem();
 
-            var user = UserActions.insertUser(username, password, role);
-            if (user != null) {
+            var user = new User(username, password, role);
+
+            if (UserActions.insertUser(user)) {
                 Utils.showOKDialog("添加成功");
                 this.userTableModel.addRow(user.toDataRow());
             } else {

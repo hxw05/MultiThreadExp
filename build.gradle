@@ -13,6 +13,8 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation files('lib/annotations-24.0.0.jar')
+
+    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
 }
 
 test {

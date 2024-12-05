@@ -1,6 +1,6 @@
 package MultiThreadExp.GUI;
 
-import MultiThreadExp.DataProcessing;
+import MultiThreadExp.Main;
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
 import MultiThreadExp.UserActions;
@@ -12,8 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 public class FileManagementWindow extends CancellableWindow {
@@ -46,13 +44,11 @@ public class FileManagementWindow extends CancellableWindow {
     }
 
     private List<Doc> getDocs() {
-        Enumeration<Doc> docEnumeration;
         try {
-            docEnumeration = DataProcessing.getAllFiles();
+            return Main.db.getAllFiles();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return List.of();
         }
-        return Collections.list(docEnumeration);
     }
 
     private JPanel getUploadPanel() {
@@ -147,19 +143,23 @@ public class FileManagementWindow extends CancellableWindow {
             }
 
             var id = idField.getText();
+
             try {
-                if (DataProcessing.getDoc(id) != null) {
+                if (Main.db.getDocById(Integer.parseInt(id)) != null) {
                     Utils.showWarnDialog("编号 " + id + " 已经存在");
                     return;
                 }
             } catch (SQLException ex) {
                 Utils.showErrorDialog("数据库错误：" + ex.getMessage());
                 return;
+            } catch (NumberFormatException ex) {
+                Utils.showErrorDialog("无效编号");
+                return;
             }
 
-            var doc = UserActions.uploadDoc(this.user, id, descriptionField.getText(), pathField.getText());
+            var doc = new Doc(id, user.getName(), Utils.getCurrentTimestamp(), descriptionField.getText(), pathField.getText());
 
-            if (doc != null) {
+            if (UserActions.uploadDoc(this.user, doc)) {
                 Utils.showOKDialog("上传成功");
                 fileTableModel.addRow(doc.toDataRow());
             } else {

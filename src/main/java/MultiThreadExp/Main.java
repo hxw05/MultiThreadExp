@@ -11,9 +11,12 @@ import java.sql.SQLException;
 public class Main {
     public static JFrame loginWindow;
     public static JFrame mainWindow;
+    public static Database db;
 
     public static void main(String[] args) {
         Utils.init();
+
+        db = new Database();
 
         loginWindow = new LoginWindow(data -> {
             var user = login(data);
@@ -32,7 +35,7 @@ public class Main {
     public static User login(LoginData loginData) {
         User user;
         try {
-            user = DataProcessing.searchUserByName(loginData.username());
+            user = db.getUserByUsername(loginData.username());
         } catch (SQLException e) {
             Utils.log("数据库连接错误");
             return null;

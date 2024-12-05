@@ -1,6 +1,8 @@
 package MultiThreadExp;
 
+import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.TableData;
+import MultiThreadExp.Objects.User;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -9,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -111,5 +115,33 @@ public class Utils {
 
     public static String[][] toDataVector(List<? extends TableData> list) {
         return list.stream().map(TableData::toDataRow).toList().toArray(new String[0][0]);
+    }
+
+    public static @Nullable Doc toDoc(ResultSet rs) {
+        try {
+            return new Doc(
+                    rs.getString("id"),
+                    rs.getString("creator"),
+                    rs.getTimestamp("timestamp"),
+                    rs.getString("description"),
+                    rs.getString("filepath")
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static @Nullable User toUser(ResultSet rs) {
+        try {
+            return new User(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
