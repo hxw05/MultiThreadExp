@@ -1,9 +1,8 @@
 package MultiThreadExp.GUI;
 
-import MultiThreadExp.Main;
+import MultiThreadExp.*;
+import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
-import MultiThreadExp.UserActions;
-import MultiThreadExp.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -24,7 +23,6 @@ public class UserManagementWindow extends CancellableWindow {
         this.setSize(400, 400);
         this.setLocationRelativeTo(null);
 
-        var data = getUserList();
         userTableModel = new DefaultTableModel(
                 Utils.toDataVector(getUserList()),
                 tableHeader
@@ -46,11 +44,15 @@ public class UserManagementWindow extends CancellableWindow {
     }
 
     public List<User> getUserList() {
-        try {
-            return Main.db.getAllUser();
-        } catch (SQLException e) {
-            return List.of();
-        }
+        List<User> res = ClientUtil.request(
+                new Request("get-all-user"),
+                d -> {
+                    if (!d.ok()) return List.of();
+                    return Utils.deserializeUserList(d.data());
+                }
+        );
+        if (res == null) return List.of();
+        return res;
     }
 
     private JPanel getDeleteUserPanel() {
@@ -166,16 +168,22 @@ public class UserManagementWindow extends CancellableWindow {
         addButton.addActionListener(e -> {
             var username = usernameField.getText();
 
-            try {
-                var user = Main.db.getUserByUsername(username);
-                if (user != null) {
-                    Utils.showWarnDialog("此用户名已存在");
-                    return;
-                }
-            } catch (SQLException ex) {
-                Utils.showErrorDialog("无法连接数据库");
-                return;
-            }
+            var res = ClientUtil.request(
+                    new Request("user-exist", username),
+                    d -> {
+                        if (d.ok()) {
+                            if (d.data().equals("yes")) {
+                                Utils.showWarnDialog("此用户名已存在");
+                                return false;
+                            }
+                            return true;
+                        }
+                        Utils.showWarnDialog("内部错误 " + d.message());
+                        return false;
+                    }
+            );
+
+            if (Boolean.FALSE.equals(res)) return;
 
             var password = passwordField.getText();
             var role = (String) roleSelection.getSelectedItem();

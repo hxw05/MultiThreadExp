@@ -37,7 +37,13 @@ public class User extends TableData {
 
     @Override
     public String toString() {
-        return this.name;
+        return this.name + "," + this.password + "," + this.role;
+    }
+
+    public static User fromString(String s) {
+        var split = s.split(",");
+        if (split.length != 3) return null;
+        return new User(split[0], split[1], split[2]);
     }
 
     @Override

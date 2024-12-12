@@ -6,19 +6,17 @@ import MultiThreadExp.Objects.User;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Utils {
@@ -33,8 +31,12 @@ public class Utils {
         }
     }
 
-    public static void log(String str) {
-        System.out.println(str);
+    public static void logClient(String str) {
+        System.out.println("[CLIENT] " + str);
+    }
+
+    public static void logServer(String str) {
+        System.out.println("[SERVER] " + str);
     }
 
     public static <T> @Nullable T read(String prompt, Class<T> type) {
@@ -143,5 +145,33 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String base64FileToString(File f) throws IOException {
+        var bytes = Files.readAllBytes(f.toPath());
+        var encoded = Base64.getEncoder().encode(bytes);
+        return new String(encoded, StandardCharsets.US_ASCII);
+    }
+
+    public static byte[] base64StringToBytes(String s) {
+        return Base64.getDecoder().decode(s.getBytes(StandardCharsets.US_ASCII));
+    }
+
+    public static void writeTo(String path, String filename, byte[] bytes) throws IOException {
+        Files.write(Path.of(path + "/" + filename), bytes);
+    }
+
+    public static <T> String serializeList(List<T> list) {
+        return String.join("#", list.stream().map(T::toString).toList());
+    }
+
+    public static List<Doc> deserializeDocList(String serialized) {
+        var split = serialized.split("#");
+        return Arrays.stream(split).map(Doc::fromString).toList();
+    }
+
+    public static List<User> deserializeUserList(String serialized) {
+        var split = serialized.split("#");
+        return Arrays.stream(split).map(User::fromString).toList();
     }
 }

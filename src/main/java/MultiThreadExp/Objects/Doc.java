@@ -73,4 +73,15 @@ public class Doc {
     public String[] toDataRow() {
         return new String[]{this.filename, this.filepath, this.description, this.creator, Utils.formatTimestamp(this.timestamp)};
     }
+
+    @Override
+    public String toString() {
+        return String.join(",", ID, creator, Long.toString(timestamp.getTime()), description, filepath);
+    }
+
+    public static Doc fromString(String s) {
+        var split = s.split(",");
+        if (split.length != 5) return null;
+        return new Doc(split[0], split[1], new Timestamp(Long.parseLong(split[2])), split[3], split[4]);
+    }
 }

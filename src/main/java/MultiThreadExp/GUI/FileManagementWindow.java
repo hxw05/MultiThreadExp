@@ -1,10 +1,8 @@
 package MultiThreadExp.GUI;
 
-import MultiThreadExp.Main;
+import MultiThreadExp.*;
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
-import MultiThreadExp.UserActions;
-import MultiThreadExp.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -44,11 +42,15 @@ public class FileManagementWindow extends CancellableWindow {
     }
 
     private List<Doc> getDocs() {
-        try {
-            return Main.db.getAllFiles();
-        } catch (SQLException e) {
-            return List.of();
-        }
+        List<Doc> res = ClientUtil.request(
+                new Request("get-all-doc"),
+                d -> {
+                    if (!d.ok()) return List.of();
+                    return Utils.deserializeDocList(d.data());
+                }
+        );
+        if (res == null) return List.of();
+        return res;
     }
 
     private JPanel getUploadPanel() {
@@ -144,22 +146,27 @@ public class FileManagementWindow extends CancellableWindow {
 
             var id = idField.getText();
 
-            try {
-                if (Main.db.getDocById(Integer.parseInt(id)) != null) {
-                    Utils.showWarnDialog("编号 " + id + " 已经存在");
-                    return;
-                }
-            } catch (SQLException ex) {
-                Utils.showErrorDialog("数据库错误：" + ex.getMessage());
-                return;
-            } catch (NumberFormatException ex) {
-                Utils.showErrorDialog("无效编号");
-                return;
-            }
+            var res = ClientUtil.request(
+                    new Request("doc-exist", id),
+                    d -> {
+                        if (d.ok()) {
+                            if (d.data().equals("yes")) {
+                                Utils.showWarnDialog("编号 " + id + " 已存在");
+                                return false;
+                            }
+                            return true;
+                        }
+                        Utils.showWarnDialog("内部错误 " + d.message());
+                        return false;
+                    }
+            );
+
+            if (res == null) return;
+            if (!res) return;
 
             var doc = new Doc(id, user.getName(), Utils.getCurrentTimestamp(), descriptionField.getText(), pathField.getText());
 
-            if (UserActions.uploadDoc(this.user, doc)) {
+            if (UserActions.uploadDoc(doc)) {
                 Utils.showOKDialog("上传成功");
                 fileTableModel.addRow(doc.toDataRow());
             } else {

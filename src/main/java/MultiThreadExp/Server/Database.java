@@ -1,7 +1,8 @@
-package MultiThreadExp;
+package MultiThreadExp.Server;
 
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
+import MultiThreadExp.Utils;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,10 +80,6 @@ public class Database {
 
             stmt.execute();
         }
-    }
-
-    public void deleteUser(User user) throws SQLException {
-        deleteUser(user.getName());
     }
 
     public void insertFile(int id, Doc file) throws SQLException {

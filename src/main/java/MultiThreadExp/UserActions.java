@@ -2,86 +2,81 @@ package MultiThreadExp;
 
 import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
-import org.jetbrains.annotations.Nullable;
+import MultiThreadExp.Server.Response;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Enumeration;
 
 public class UserActions {
     public static boolean downloadDoc(Doc doc, String targetPath) {
-        return Utils.downloadFile(doc.getFilename(), targetPath);
+        Utils.logClient("下载文件");
+
+        String res = ClientUtil.request(
+                new Request("file-download", doc.getID()),
+                d -> {
+                    if (!d.ok()) {
+                        Utils.logClient("服务端错误：" + d.message());
+                        return null;
+                    }
+                    return d.data();
+                }
+        );
+
+        if (res == null) return false;
+
+        var decoded = Utils.base64StringToBytes(res);
+        try {
+            Utils.writeTo(targetPath, doc.getFilename(), decoded);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utils.logClient("无法写入文件");
+            return false;
+        }
     }
 
     public static boolean changePassword(User user, String newPassword) {
-        Utils.log("修改密码");
+        Utils.logClient("修改密码");
 
-        try {
-            Main.db.updateUser(user.getName(), newPassword, user.getRole());
-            return true;
-        } catch (SQLException e) {
-            Utils.log("数据库连接错误");
-            return false;
-        }
+        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-update", user.getName(), newPassword, user.getRole()), Response::ok));
     }
 
-    public static boolean uploadDoc(User user, Doc doc) {
-        Utils.log("上传文件");
+    public static boolean uploadDoc(Doc doc) {
+        Utils.logClient("上传文件");
 
-        if (!Utils.uploadFile(new File(doc.getFilepath()))) {
-            Utils.log("上传过程出现问题");
+        var file = new File(doc.getFilepath());
+        if (!file.exists()) {
+            Utils.logClient("文件不存在");
             return false;
         }
 
+        String encoded;
         try {
-            Main.db.insertFile(Integer.parseInt(doc.getID()), doc);
-            return true;
-        } catch (SQLException e) {
-            Utils.log("数据库连接错误");
-            return false;
-        } catch (NumberFormatException e) {
-            Utils.log("无效编号");
+            encoded = Utils.base64FileToString(file);
+        } catch (IOException e) {
+            Utils.logClient("无法解析文件");
             return false;
         }
-    }
 
-    public static void exit() {
-        Utils.log("退出系统");
-        System.exit(0);
+        return Boolean.TRUE.equals(ClientUtil.request(new Request("file-upload", encoded, doc.toString()), Response::ok));
     }
 
     public static boolean updateUser(User user, String newPassword, String newRole) {
-        Utils.log("修改用户");
+        Utils.logClient("修改用户");
 
-        try {
-            Main.db.updateUser(user.getName(), newPassword, newRole);
-            return true;
-        } catch (SQLException e) {
-            Utils.log("数据库连接错误");
-            return false;
-        }
+        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-update", user.getName(), newPassword, newRole), Response::ok));
     }
 
     public static boolean deleteUser(User user) {
-        Utils.log("删除用户");
+        Utils.logClient("删除用户");
 
-        try {
-            Main.db.deleteUser(user);
-            return true;
-        } catch (SQLException e) {
-            Utils.log("数据库连接错误");
-            return false;
-        }
+        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-delete", user.getName()), Response::ok));
     }
 
     public static boolean insertUser(User user) {
-        Utils.log("新增用户");
+        Utils.logClient("新增用户");
 
-        try {
-            Main.db.insertUser(user);
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
+        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-insert", user.toString()), Response::ok));
     }
 }
