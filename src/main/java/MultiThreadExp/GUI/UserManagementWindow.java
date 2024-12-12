@@ -1,14 +1,12 @@
 package MultiThreadExp.GUI;
 
 import MultiThreadExp.*;
-import MultiThreadExp.Objects.Doc;
 import MultiThreadExp.Objects.User;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserManagementWindow extends CancellableWindow {
@@ -76,22 +74,20 @@ public class UserManagementWindow extends CancellableWindow {
     private @NotNull JButton getDeleteButton() {
         var deleteButton = new JButton("删除");
 
-        deleteButton.addActionListener(e -> {
-            Utils.showConfirmDialog("确定要删除该用户吗？", () -> {
-                var selectedIndex = userTable.getSelectedRow();
-                if (selectedIndex == -1) {
-                    Utils.showWarnDialog("请选择要删除的用户");
-                    return;
-                }
-                var targetUser = getUserList().get(selectedIndex);
-                if (UserActions.deleteUser(targetUser)) {
-                    Utils.showOKDialog("删除成功");
-                    userTableModel.removeRow(selectedIndex);
-                } else {
-                    Utils.showErrorDialog("删除失败");
-                }
-            });
-        });
+        deleteButton.addActionListener(e -> Utils.showConfirmDialog("确定要删除该用户吗？", () -> {
+            var selectedIndex = userTable.getSelectedRow();
+            if (selectedIndex == -1) {
+                Utils.showWarnDialog("请选择要删除的用户");
+                return;
+            }
+            var targetUser = getUserList().get(selectedIndex);
+            if (UserActions.deleteUser(targetUser)) {
+                Utils.showOKDialog("删除成功");
+                userTableModel.removeRow(selectedIndex);
+            } else {
+                Utils.showErrorDialog("删除失败");
+            }
+        }));
         return deleteButton;
     }
 

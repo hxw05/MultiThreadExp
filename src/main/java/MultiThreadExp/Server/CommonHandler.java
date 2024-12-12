@@ -2,9 +2,6 @@ package MultiThreadExp.Server;
 
 import MultiThreadExp.Request;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 public abstract class CommonHandler {
     public Request request;
 

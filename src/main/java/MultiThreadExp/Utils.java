@@ -11,13 +11,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class Utils {
     public static final String UPLOAD_PATH = "/Users/su/code/MultiThreadExp/upload";
@@ -39,27 +37,6 @@ public class Utils {
         System.out.println("[SERVER] " + str);
     }
 
-    public static <T> @Nullable T read(String prompt, Class<T> type) {
-        System.out.print(prompt);
-        var scanner = new Scanner(System.in);
-        if (type == Integer.class)
-            return type.cast(scanner.nextInt());
-        if (type == String.class)
-            return type.cast(scanner.nextLine());
-        if (type == Double.class)
-            return type.cast(scanner.nextDouble());
-        if (type == Float.class)
-            return type.cast(scanner.nextFloat());
-        return null;
-    }
-
-    public static <T> void enumForEach(Enumeration<T> enumeration, Consumer<T> formatter) {
-        while (enumeration.hasMoreElements()) {
-            var e = enumeration.nextElement();
-            formatter.accept(e);
-        }
-    }
-
     public static Timestamp getCurrentTimestamp() {
         return new Timestamp(System.currentTimeMillis());
     }
@@ -67,35 +44,6 @@ public class Utils {
     public static String formatTimestamp(Timestamp timestamp) {
         var sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS");
         return sdf.format(new Date(timestamp.getTime()));
-    }
-
-    /**
-     * 将 from 处文件复制到 to 处
-     *
-     * @param from 来源文件
-     * @param to   目标文件（是一个目前不存在的文件）
-     * @return 如果复制过程没有出现 IOException，返回 true
-     */
-    public static boolean copy(File from, File to) {
-        try {
-            Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean uploadFile(File file) {
-        var operationPath = new File(UPLOAD_PATH + "/" + file.getName());
-        return copy(file, operationPath);
-    }
-
-    public static boolean downloadFile(String filename, String targetPath) {
-        var source = new File(UPLOAD_PATH + "/" + filename);
-        var target = new File(targetPath + "/" + filename);
-
-        return copy(source, target);
     }
 
     public static void showErrorDialog(String text) {

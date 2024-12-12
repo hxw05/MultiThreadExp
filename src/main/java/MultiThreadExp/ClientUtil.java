@@ -29,7 +29,7 @@ public class ClientUtil {
         try (
                 var client = getSocket();
                 var writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                var reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                var reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
         ) {
             writer.write(request.toString() + "\n");
             writer.flush();
