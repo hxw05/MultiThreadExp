@@ -5,7 +5,7 @@ import MultiThreadExp.Utils;
 import java.io.File;
 import java.sql.Timestamp;
 
-public class Doc {
+public class Doc extends TableData {
     private String ID;
     private String creator;
     private Timestamp timestamp;
@@ -70,6 +70,7 @@ public class Doc {
         this.filepath = filepath;
     }
 
+    @Override
     public String[] toDataRow() {
         return new String[]{this.filename, this.filepath, this.description, this.creator, Utils.formatTimestamp(this.timestamp)};
     }

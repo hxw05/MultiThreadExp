@@ -23,7 +23,7 @@ public class FileManagementWindow extends CancellableWindow {
         this.user = user;
         this.setLocationRelativeTo(null);
 
-        var docs = getDocs().stream().map(Doc::toDataRow).toList().toArray(new String[0][0]);
+        var docs = Utils.toDataVector(getDocs());
         fileTableModel = new DefaultTableModel(docs, new String[]{"文件名", "路径", "描述", "上传者", "上传时间"});
         fileTable = new JTable() {
             public boolean isCellEditable(int row, int column) {
