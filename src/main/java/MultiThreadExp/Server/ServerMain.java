@@ -4,13 +4,13 @@ import MultiThreadExp.Utils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerMain {
-    public static ServerThread server;
     public static Database db;
     public static ServerSocket serverSocket;
+    public static List<ServerThread> serverThreads = new ArrayList<>();
 
     public static void main(String[] args) {
         db = new Database();
@@ -24,14 +24,17 @@ public class ServerMain {
 
         int clientNumber = 0;
 
-
         try {
             while (true) {
                 var socket = serverSocket.accept();
                 clientNumber++;
-                Utils.logServer("Client #" + clientNumber + " connected to server");
+                Utils.logServer("Client #" + clientNumber + " connected to server.");
                 var thread = new ServerThread(socket, clientNumber);
+                serverThreads.add(thread);
                 thread.start();
+
+                Utils.logServer("Current online: " + String.join(",",
+                        serverThreads.stream().filter(Thread::isAlive).map(x -> "#" + x.getNumber()).toList()));
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -7,8 +7,8 @@ import java.io.*;
 import java.net.Socket;
 
 public class ServerThread extends Thread {
+    public final int number;
     private final Socket client;
-    private final int number;
 
     public ServerThread(Socket client, int number) {
         this.client = client;
@@ -34,6 +34,11 @@ public class ServerThread extends Thread {
                     Utils.logServer("Cannot process request.");
                     response = new Response(false, "internal", "");
                 } else {
+                    if (request.action().equals("disconnect")) {
+                        Utils.logServer("Connection closed by client", number);
+                        break;
+                    }
+
                     response = switch (request.action()) {
                         case "login" -> new LoginHandler(request).handle();
                         case "user-exist", "doc-exist" -> new ExistenceHandler(request).handle();
@@ -43,10 +48,6 @@ public class ServerThread extends Thread {
                         case "file-upload" -> new FileUploadHandler(request).handle();
                         case "file-download" -> new FileDownloadHandler(request).handle();
                         case "get-all-doc", "get-all-user" -> new GetAllHandler(request).handle();
-                        case "disconnect" -> {
-                            Utils.logServer("Connection ended by client", number);
-                            throw new InterruptedException();
-                        }
                         default -> new Response(false, "invalid action <" + request.action() + ">", null);
                     };
 
@@ -62,8 +63,12 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
             Utils.logServer("Catched IO exception", number);
-        } catch (InterruptedException e) {
-            Utils.logServer("Connection ended by client", number);
         }
+
+        interrupt();
+    }
+
+    public int getNumber() {
+        return number;
     }
 }

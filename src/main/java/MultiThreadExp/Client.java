@@ -27,15 +27,10 @@ public class Client {
         }
     }
 
-    public static void sendMessage(String message) {
-        if (client == null) {
-            Utils.showErrorDialog("无法连接到服务器");
-            return;
-        }
-
+    public static void close() {
+        request(new Request("disconnect", null, null));
         try {
-            writer.write(message + "\n");
-            writer.flush();
+            client.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,6 +48,9 @@ public class Client {
 
             var respText = reader.readLine();
             Utils.logClient("respText=" + respText);
+
+            if (respText == null) return null;
+
             return receiver.apply(Response.from(respText));
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,5 +66,9 @@ public class Client {
             receiver.accept(d);
             return null;
         });
+    }
+
+    public static void request(Request request) {
+        request(request, d -> null);
     }
 }

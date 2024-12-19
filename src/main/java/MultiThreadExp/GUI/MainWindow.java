@@ -1,8 +1,11 @@
 package MultiThreadExp.GUI;
 
+import MultiThreadExp.Client;
 import MultiThreadExp.Objects.User;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class MainWindow extends JFrame {
@@ -24,6 +27,14 @@ public class MainWindow extends JFrame {
         );
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Client.close();
+                e.getWindow().dispose();
+            }
+        });
 
         var menuBar = new JMenuBar();
         var menuUserManagement = new JMenu("用户管理");

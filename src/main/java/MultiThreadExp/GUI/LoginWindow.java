@@ -1,10 +1,12 @@
 package MultiThreadExp.GUI;
 
+import MultiThreadExp.Client;
 import MultiThreadExp.LayoutUtil;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
@@ -22,6 +24,14 @@ public class LoginWindow extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.onLoginButtonClicked = onLoginButtonClicked;
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Client.close();
+                e.getWindow().dispose();
+            }
+        });
 
         var mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -68,7 +78,7 @@ public class LoginWindow extends JFrame {
         var controlPanel = new JPanel();
 
         var loginButton = new JButton("确定");
-        var exitButton = new JButton("取消");
+        var exitButton = new JButton("退出");
 
         loginButton.addActionListener(e -> this.onLoginButtonClicked.accept(
                 new LoginData(
