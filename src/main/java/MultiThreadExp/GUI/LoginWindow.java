@@ -70,14 +70,12 @@ public class LoginWindow extends JFrame {
         var loginButton = new JButton("确定");
         var exitButton = new JButton("取消");
 
-        loginButton.addActionListener(e -> {
-            this.onLoginButtonClicked.accept(
-                    new LoginData(
-                            usernameField.getText(),
-                            new String(passwordField.getPassword())
-                    )
-            );
-        });
+        loginButton.addActionListener(e -> this.onLoginButtonClicked.accept(
+                new LoginData(
+                        usernameField.getText(),
+                        new String(passwordField.getPassword())
+                )
+        ));
         // 关闭窗口，结束进程
         exitButton.addActionListener(e -> this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
 
