@@ -9,13 +9,22 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ClientUtil {
-    public static Socket getSocket() throws IOException {
-        return new Socket("localhost", 4567);
+    public static Socket getSocket() {
+        try {
+            return new Socket("localhost", 4567);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static void sendMessage(String message) {
+        var client = getSocket();
+        if (client == null) {
+            Utils.showErrorDialog("无法连接到服务器");
+            return;
+        }
+
         try (
-                var client = getSocket();
                 var writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
         ) {
             writer.write(message + "\n");
@@ -26,8 +35,13 @@ public class ClientUtil {
     }
 
     public static <T> @Nullable T request(Request request, Function<Response, T> receiver) {
+        var client = getSocket();
+        if (client == null) {
+            Utils.showErrorDialog("无法连接到服务器");
+            return null;
+        }
+
         try (
-                var client = getSocket();
                 var writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
                 var reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
         ) {
