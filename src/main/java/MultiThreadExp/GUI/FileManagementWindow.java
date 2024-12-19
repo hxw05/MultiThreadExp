@@ -41,7 +41,7 @@ public class FileManagementWindow extends CancellableWindow {
     }
 
     private List<Doc> getDocs() {
-        List<Doc> res = ClientUtil.request(
+        List<Doc> res = Client.request(
                 new Request("get-all-doc"),
                 d -> {
                     if (!d.ok()) return List.of();
@@ -145,7 +145,7 @@ public class FileManagementWindow extends CancellableWindow {
 
             var id = idField.getText();
 
-            var res = ClientUtil.request(
+            var res = Client.request(
                     new Request("doc-exist", id),
                     d -> {
                         if (d.ok()) {

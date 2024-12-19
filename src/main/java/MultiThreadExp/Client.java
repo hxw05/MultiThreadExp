@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ClientUtil {
+public class Client {
     public static Socket client;
     public static OutputStream outputStream;
     public static InputStream inputStream;

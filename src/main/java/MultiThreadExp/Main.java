@@ -13,9 +13,9 @@ public class Main {
 
     public static void main(String[] args) {
         Utils.init();
-        ClientUtil.init();
+        Client.init();
 
-        loginWindow = new LoginWindow(data -> ClientUtil.request(
+        loginWindow = new LoginWindow(data -> Client.request(
                 new Request("login", data.username(), data.password()),
                 d -> {
                     if (!d.ok()) {

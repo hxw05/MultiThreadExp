@@ -49,7 +49,7 @@ public class UserManagementWindow extends CancellableWindow {
     }
 
     public static List<User> getUserList() {
-        List<User> res = ClientUtil.request(
+        List<User> res = Client.request(
                 new Request("get-all-user"),
                 d -> {
                     if (!d.ok()) return List.of();
@@ -171,7 +171,7 @@ public class UserManagementWindow extends CancellableWindow {
         addButton.addActionListener(e -> {
             var username = usernameField.getText();
 
-            var res = ClientUtil.request(
+            var res = Client.request(
                     new Request("user-exist", username),
                     d -> {
                         if (d.ok()) {

@@ -11,7 +11,7 @@ public class UserActions {
     public static boolean downloadDoc(Doc doc, String targetPath) {
         Utils.logClient("下载文件");
 
-        String res = ClientUtil.request(
+        String res = Client.request(
                 new Request("file-download", doc.getID()),
                 d -> {
                     if (!d.ok()) {
@@ -38,7 +38,7 @@ public class UserActions {
     public static boolean changePassword(User user, String newPassword) {
         Utils.logClient("修改密码");
 
-        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-update", user.getName(), newPassword, user.getRole()), Response::ok));
+        return Boolean.TRUE.equals(Client.request(new Request("user-update", user.getName(), newPassword, user.getRole()), Response::ok));
     }
 
     public static boolean uploadDoc(Doc doc) {
@@ -58,24 +58,24 @@ public class UserActions {
             return false;
         }
 
-        return Boolean.TRUE.equals(ClientUtil.request(new Request("file-upload", encoded, doc.toString()), Response::ok));
+        return Boolean.TRUE.equals(Client.request(new Request("file-upload", encoded, doc.toString()), Response::ok));
     }
 
     public static boolean updateUser(User user, String newPassword, String newRole) {
         Utils.logClient("修改用户");
 
-        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-update", user.getName(), newPassword, newRole), Response::ok));
+        return Boolean.TRUE.equals(Client.request(new Request("user-update", user.getName(), newPassword, newRole), Response::ok));
     }
 
     public static boolean deleteUser(User user) {
         Utils.logClient("删除用户");
 
-        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-delete", user.getName()), Response::ok));
+        return Boolean.TRUE.equals(Client.request(new Request("user-delete", user.getName()), Response::ok));
     }
 
     public static boolean insertUser(User user) {
         Utils.logClient("新增用户");
 
-        return Boolean.TRUE.equals(ClientUtil.request(new Request("user-insert", user.toString()), Response::ok));
+        return Boolean.TRUE.equals(Client.request(new Request("user-insert", user.toString()), Response::ok));
     }
 }
