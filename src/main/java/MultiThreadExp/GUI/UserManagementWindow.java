@@ -12,9 +12,9 @@ import java.util.List;
 public class UserManagementWindow extends CancellableWindow {
     public final JTabbedPane tabbedPane = new JTabbedPane();
     private final String[] roles = new String[]{"administrator", "browser", "operator"};
-    private final DefaultTableModel userTableModel;
-    private final JTable userTable;
-    private final String[] tableHeader = new String[]{"用户名", "密码", "角色"};
+    private static DefaultTableModel userTableModel;
+    private static JTable userTable;
+    private static final String[] tableHeader = new String[]{"用户名", "密码", "角色"};
 
     public UserManagementWindow() {
         this.setLayout(null);
@@ -41,7 +41,14 @@ public class UserManagementWindow extends CancellableWindow {
         this.setContentPane(tabbedPane);
     }
 
-    public List<User> getUserList() {
+    public static void refreshTable() {
+        userTableModel.setDataVector(
+                Utils.toDataVector(getUserList()),
+                tableHeader
+        );
+    }
+
+    public static List<User> getUserList() {
         List<User> res = ClientUtil.request(
                 new Request("get-all-user"),
                 d -> {
@@ -188,7 +195,7 @@ public class UserManagementWindow extends CancellableWindow {
 
             if (UserActions.insertUser(user)) {
                 Utils.showOKDialog("添加成功");
-                this.userTableModel.addRow(user.toDataRow());
+                userTableModel.addRow(user.toDataRow());
             } else {
                 Utils.showErrorDialog("添加失败");
             }
@@ -206,7 +213,7 @@ public class UserManagementWindow extends CancellableWindow {
         var label2 = new JLabel("密码");
         var label3 = new JLabel("角色");
 
-        var usernameSelection = new JComboBox<>(getUserList().toArray(new User[0]));
+        var usernameSelection = new JComboBox<>(getUserList().stream().map(User::getName).toArray(String[]::new));
         var passwordField = new JTextField(16);
         var roleSelection = new JComboBox<>(roles);
 
@@ -261,7 +268,7 @@ public class UserManagementWindow extends CancellableWindow {
         return panel;
     }
 
-    private @NotNull JButton getAlterButton(JComboBox<User> usernameSelection, JTextField passwordField, JComboBox<String> roleSelection) {
+    private @NotNull JButton getAlterButton(JComboBox<String> usernameSelection, JTextField passwordField, JComboBox<String> roleSelection) {
         var alterButton = new JButton("修改");
 
         alterButton.addActionListener(e -> {
@@ -276,10 +283,7 @@ public class UserManagementWindow extends CancellableWindow {
 
             if (UserActions.updateUser(targetUser, password, role)) {
                 Utils.showOKDialog("修改成功");
-                userTableModel.setDataVector(
-                        Utils.toDataVector(getUserList()),
-                        tableHeader
-                );
+                refreshTable();
             } else {
                 Utils.showErrorDialog("修改失败");
             }

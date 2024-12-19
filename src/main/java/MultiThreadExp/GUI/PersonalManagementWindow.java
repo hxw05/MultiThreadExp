@@ -121,6 +121,7 @@ public class PersonalManagementWindow extends CancellableWindow {
             }
             if (UserActions.changePassword(this.user, newPassword)) {
                 Utils.showOKDialog("修改成功");
+                UserManagementWindow.refreshTable();
             } else {
                 Utils.showErrorDialog("修改过程出现问题");
             }
