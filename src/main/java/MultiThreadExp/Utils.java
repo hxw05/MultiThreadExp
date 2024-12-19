@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -65,7 +66,7 @@ public class Utils {
 
     public static String formatTimestamp(Timestamp timestamp) {
         var sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SS");
-        return sdf.format(timestamp.toLocalDateTime());
+        return sdf.format(new Date(timestamp.getTime()));
     }
 
     public static @NotNull File getFileOperationPath(String filename, UserActionType type) {
