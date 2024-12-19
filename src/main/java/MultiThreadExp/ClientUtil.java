@@ -9,24 +9,31 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ClientUtil {
-    public static Socket getSocket() {
+    public static Socket client;
+    public static OutputStream outputStream;
+    public static InputStream inputStream;
+    public static BufferedWriter writer;
+    public static BufferedReader reader;
+
+    public static void init() {
         try {
-            return new Socket("localhost", 4567);
+            client = new Socket("localhost", 4567);
+            outputStream = client.getOutputStream();
+            inputStream = client.getInputStream();
+            writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+            reader = new BufferedReader(new InputStreamReader(inputStream));
         } catch (IOException e) {
-            return null;
+            client = null;
         }
     }
 
     public static void sendMessage(String message) {
-        var client = getSocket();
         if (client == null) {
             Utils.showErrorDialog("无法连接到服务器");
             return;
         }
 
-        try (
-                var writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
-        ) {
+        try {
             writer.write(message + "\n");
             writer.flush();
         } catch (IOException e) {
@@ -35,16 +42,12 @@ public class ClientUtil {
     }
 
     public static <T> @Nullable T request(Request request, Function<Response, T> receiver) {
-        var client = getSocket();
         if (client == null) {
             Utils.showErrorDialog("无法连接到服务器");
             return null;
         }
 
-        try (
-                var writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                var reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
-        ) {
+        try {
             writer.write(request.toString() + "\n");
             writer.flush();
 

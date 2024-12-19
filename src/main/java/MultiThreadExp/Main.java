@@ -13,6 +13,8 @@ public class Main {
 
     public static void main(String[] args) {
         Utils.init();
+        ClientUtil.init();
+
         loginWindow = new LoginWindow(data -> ClientUtil.request(
                 new Request("login", data.username(), data.password()),
                 d -> {

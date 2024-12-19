@@ -37,6 +37,10 @@ public class Utils {
         System.out.println("[SERVER] " + str);
     }
 
+    public static void logServer(String str, int number) {
+        logServer("[Thread #" + number +"] " + str);
+    }
+
     public static Timestamp getCurrentTimestamp() {
         return new Timestamp(System.currentTimeMillis());
     }
